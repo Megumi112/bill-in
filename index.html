@@ -37,13 +37,13 @@
   <label class="label">Mã khách hàng</label>
   <input list="danhSachKH" id="maKH" placeholder="(mục tìm kiếm)" onkeydown="if(event.key==='Enter'){timKiemMaKH()}" />
   <datalist id="danhSachKH"></datalist>
-  <button onclick="timKiemMaKH()">🔍</button>
+  <button type="button" onclick="timKiemMaKH()">🔍</button>
 </div>
 
 <div class="row">
   <label class="label">Tìm theo tên KH</label>
   <input id="tenKHInput" placeholder="Nhập tên KH" onkeydown="if(event.key==='Enter'){timKiemTenKH()}" />
-  <button onclick="timKiemTenKH()">🔍</button>
+  <button type="button" onclick="timKiemTenKH()">🔍</button>
 </div>
 
 <div class="row">
@@ -58,12 +58,12 @@
 
 <div>
   <div id="hoaDon">[Hóa đơn sẽ hiển thị tại đây]</div>
-  <button onclick="inHoaDon()">In</button>
-  <button onclick="xacNhanThu()" style="border:2px solid black;">Xác nhận đã thu</button>
+  <button type="button" onclick="inHoaDon()">In</button>
+  <button type="button" onclick="xacNhanThu()" style="border:2px solid black;">Xác nhận đã thu</button>
 </div>
 
 <div class="row">
-  <button onclick="document.getElementById('fileInput').click()">Đẩy dữ liệu</button>
+  <button type="button" onclick="document.getElementById('fileInput').click()">Đẩy dữ liệu</button>
   <input type="file" id="fileInput" accept=".xlsx" style="display:none" onchange="docFileExcel(event)" />
 </div>
 
@@ -71,17 +71,17 @@
   <div>
     <label>Lịch sử in</label><br>
     <textarea id="lichSuIn" readonly></textarea><br>
-    <button onclick="xuatLichSu('in')">Xuất lịch sử</button>
+    <button type="button" onclick="xuatLichSu('in')">Xuất lịch sử</button>
   </div>
   <div>
     <label><b>Lịch sử thu</b></label><br>
     <textarea id="lichSuThu" readonly></textarea><br>
-    <button onclick="xuatLichSu('thu')">Xuất lịch sử</button>
+    <button type="button" onclick="xuatLichSu('thu')">Xuất lịch sử</button>
   </div>
 </div>
 
-<button onclick="xuatLichSuExcel()">Xuất Excel</button>
-<button onclick="xoaLichSu()">🗑️ Xóa lịch sử</button>
+<button type="button" onclick="xuatLichSuExcel()">Xuất Excel</button>
+<button type="button" onclick="xoaLichSu()">🗑️ Xóa lịch sử</button>
 
 <script>
 let duLieu = [];
@@ -145,8 +145,8 @@ function inHoaDon() {
   lichSuIn.push({ maKH, tenKH, soTien: tong, thoiGian });
   localStorage.setItem("lichSuIn", JSON.stringify(lichSuIn));
   capNhatLichSu();
-  // Mở hộp thoại in và chỉ in phần hóa đơn
-  window.print();
+  // Gọi print trong callback để đảm bảo Edge nhận diện đây là hành động người dùng
+  setTimeout(() => { window.print(); }, 0);
 }
 
 function xacNhanThu() {
@@ -214,6 +214,7 @@ function xoaLichSu() {
 }
 
 window.onload = capNhatLichSu;
+
 </script>
 
 </body>
