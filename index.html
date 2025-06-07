@@ -75,6 +75,7 @@
 </div>
 
 <button onclick="xuatLichSuExcel()">Xuất Excel</button>
+<button onclick="xoaLichSu()">🗑️ Xóa lịch sử</button>
 
 <script>
 let duLieu = [];
@@ -183,6 +184,16 @@ function docFileExcel(event) {
     });
   };
   reader.readAsArrayBuffer(file);
+}
+
+function xoaLichSu() {
+  if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử không?")) {
+    localStorage.removeItem("lichSuIn");
+    localStorage.removeItem("lichSuThu");
+    lichSuIn = [];
+    lichSuThu = [];
+    capNhatLichSu();
+  }
 }
 
 window.onload = capNhatLichSu;
