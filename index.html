@@ -7,6 +7,8 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     input, button, textarea { margin: 5px; padding: 5px; }
+
+    /* Khung hóa đơn */
     #hoaDon {
       width: 400px;
       min-height: 250px;
@@ -14,9 +16,11 @@
       padding: 15px;
       white-space: pre-wrap;
       font-size: 16px;
-      font-family: 'Courier New', monospace;
-      line-height: 1.6;
+      font-family: 'Times New Roman', serif;
+      line-height: 1.2; /* Điều chỉnh khoảng cách dòng */
     }
+    #hoaDon p { margin: 0; }
+
     .row { display: flex; align-items: center; margin-bottom: 10px; }
     .label { width: 150px; }
     #lichSuIn, #lichSuThu { width: 300px; height: 100px; margin: 5px; }
@@ -121,17 +125,17 @@ function hienThiHoaDon(maKH, tenKH, soTien) {
   const phi = 2000;
   const tong = Number(soTien) + phi;
   const thoiGian = new Date().toLocaleDateString('vi-VN');
-  const noiDung = `BIÊN NHẬN THANH TOÁN TIỀN ĐIỆN
-
-Mã KH: ${maKH}
-Tên KH: ${tenKH}
-Số Tiền: ${formatVND(soTien)}
-Phí: ${formatVND(phi)}
-Tổng Tiền: ${formatVND(tong)}
-
-ĐÃ THANH TOÁN
-Ngày ${thoiGian}`;
-  document.getElementById("hoaDon").innerText = noiDung;
+  const noiDung = `
+    <p style="font-weight:bold;">BIÊN NHẬN THANH TOÁN TIỀN ĐIỆN</p>
+    <p>Mã KH: ${maKH}</p>
+    <p>Tên KH: ${tenKH}</p>
+    <p>Số Tiền: ${formatVND(soTien)}</p>
+    <p>Phí: ${formatVND(phi)}</p>
+    <p>Tổng Tiền: ${formatVND(tong)}</p>
+    <p style="font-weight:bold;">ĐÃ THANH TOÁN</p>
+    <p>Ngày ${thoiGian}</p>
+  `;
+  document.getElementById("hoaDon").innerHTML = noiDung;
 }
 
 function inHoaDon() {
@@ -139,13 +143,9 @@ function inHoaDon() {
   const tenKH = document.getElementById("tenKH").value;
   const soTien = Number(document.getElementById("soTien").value || 0);
   hienThiHoaDon(maKH, tenKH, soTien);
-  const phi = 2000;
-  const tong = soTien + phi;
-  const thoiGian = new Date().toLocaleDateString('vi-VN');
-  lichSuIn.push({ maKH, tenKH, soTien: tong, thoiGian });
+  lichSuIn.push({ maKH, tenKH, soTien: soTien + 2000, thoiGian: new Date().toLocaleDateString('vi-VN') });
   localStorage.setItem("lichSuIn", JSON.stringify(lichSuIn));
   capNhatLichSu();
-  // Gọi print trong callback để đảm bảo Edge nhận diện đây là hành động người dùng
   setTimeout(() => { window.print(); }, 0);
 }
 
@@ -214,7 +214,6 @@ function xoaLichSu() {
 }
 
 window.onload = capNhatLichSu;
-
 </script>
 
 </body>
