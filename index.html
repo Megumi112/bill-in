@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Thu tiền điện</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
+<meta charset="utf-8"/>
+<title>Thu tiền điện</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     input, button, textarea { margin: 5px; padding: 5px; }
 
@@ -15,7 +16,7 @@
       border: 2px solid black;
       padding: 15px;
       white-space: pre-wrap;
-      font-size: 16px;
+      font-size: 18px;
       font-family: 'Times New Roman', serif;
       line-height: 1.2; /* Điều chỉnh khoảng cách dòng */
     }
@@ -34,59 +35,52 @@
   </style>
 </head>
 <body>
-
 <h2>Thu tiền điện</h2>
-
 <div class="row">
-  <label class="label">Mã khách hàng</label>
-  <input list="danhSachKH" id="maKH" placeholder="(mục tìm kiếm)" onkeydown="if(event.key==='Enter'){timKiemMaKH()}" />
-  <datalist id="danhSachKH"></datalist>
-  <button type="button" onclick="timKiemMaKH()">🔍</button>
+<label class="label">Mã khách hàng</label>
+<input id="maKH" list="danhSachKH" onkeydown="if(event.key==='Enter'){timKiemMaKH()}" placeholder="(mục tìm kiếm)"/>
+<datalist id="danhSachKH"></datalist>
+<button onclick="timKiemMaKH()" type="button">🔍</button>
 </div>
-
 <div class="row">
-  <label class="label">Tìm theo tên KH</label>
-  <input id="tenKHInput" placeholder="Nhập tên KH" onkeydown="if(event.key==='Enter'){timKiemTenKH()}" />
-  <button type="button" onclick="timKiemTenKH()">🔍</button>
+<label class="label">Tìm theo tên KH</label>
+<input id="tenKHInput" onkeydown="if(event.key==='Enter'){timKiemTenKH()}" placeholder="Nhập tên KH"/>
+<button onclick="timKiemTenKH()" type="button">🔍</button>
 </div>
-
 <div class="row">
-  <label class="label">Số tiền</label>
-  <input id="soTien" readonly />
+<label class="label">Số tiền</label>
+<input id="soTien" readonly=""/>
 </div>
-
 <div class="row">
-  <label class="label">Tên KH</label>
-  <input id="tenKH" readonly />
+<label class="label">Tên KH</label>
+<input id="tenKH" readonly=""/>
 </div>
-
 <div>
-  <div id="hoaDon">[Hóa đơn sẽ hiển thị tại đây]</div>
-  <button type="button" onclick="inHoaDon()">In</button>
-  <button type="button" onclick="xacNhanThu()" style="border:2px solid black;">Xác nhận đã thu</button>
+<div id="hoaDon">[Hóa đơn sẽ hiển thị tại đây]</div>
+<button onclick="inHoaDon()" type="button">In</button>
+<button onclick="xacNhanThu()" style="border:2px solid black;" type="button">Xác nhận đã thu</button>
 </div>
-
 <div class="row">
-  <button type="button" onclick="document.getElementById('fileInput').click()">Đẩy dữ liệu</button>
-  <input type="file" id="fileInput" accept=".xlsx" style="display:none" onchange="docFileExcel(event)" />
+<button onclick="document.getElementById('fileInput').click()" type="button">Đẩy dữ liệu</button>
+<input accept=".xlsx" id="fileInput" onchange="docFileExcel(event)" style="display:none" type="file"/>
 </div>
-
 <div class="row">
-  <div>
-    <label>Lịch sử in</label><br>
-    <textarea id="lichSuIn" readonly></textarea><br>
-    <button type="button" onclick="xuatLichSu('in')">Xuất lịch sử</button>
-  </div>
-  <div>
-    <label><b>Lịch sử thu</b></label><br>
-    <textarea id="lichSuThu" readonly></textarea><br>
-    <button type="button" onclick="xuatLichSu('thu')">Xuất lịch sử</button>
-  </div>
+<div>
+<label>Lịch sử in</label><br/>
+<textarea id="lichSuIn" readonly=""></textarea><br/>
+<button onclick="xuatLichSu('in')" type="button">Xuất lịch sử</button>
 </div>
-
-<button type="button" onclick="xuatLichSuExcel()">Xuất Excel</button>
-<button type="button" onclick="xoaLichSu()">🗑️ Xóa lịch sử</button>
-
+<div>
+<label><b>Lịch sử thu</b></label><br/>
+<textarea id="lichSuThu" readonly=""></textarea><br/>
+<button onclick="xuatLichSu('thu')" type="button">Xuất lịch sử</button>
+</div>
+</div><div class="row">
+<label class="label">Người thu tiền</label>
+<input id="nguoiThuTien" placeholder="Nhập tên người thu"/>
+</div>
+<button onclick="xuatLichSuExcel()" type="button">Xuất Excel</button>
+<button onclick="xoaLichSu()" type="button">🗑️ Xóa lịch sử</button>
 <script>
 let duLieu = [];
 let lichSuIn = JSON.parse(localStorage.getItem("lichSuIn")) || [];
@@ -122,17 +116,22 @@ function timKiemTenKH() {
 }
 
 function hienThiHoaDon(maKH, tenKH, soTien) {
+  const nguoiThu = document.getElementById("nguoiThuTien").value || "-";
   const phi = 2000;
   const tong = Number(soTien) + phi;
-  const thoiGian = new Date().toLocaleDateString('vi-VN');
+  const now = new Date();
+  const ngay = now.toLocaleDateString('vi-VN');
+  const gio = now.toTimeString().split(' ')[0];
+  const thoiGian = `Ngày ${ngay}, Giờ ${gio}`;
   const noiDung = `
-    <p style="font-weight:bold;">BIÊN NHẬN THANH TOÁN TIỀN ĐIỆN</p>
+    <div style="text-align:center; font-weight:bold;">BIÊN LAI NHẬN TIỀN CHUYỂN KHOẢN</div>
     <p>Mã KH: ${maKH}</p>
     <p>Tên KH: ${tenKH}</p>
     <p>Số Tiền: ${formatVND(soTien)}</p>
     <p>Phí: ${formatVND(phi)}</p>
     <p>Tổng Tiền: ${formatVND(tong)}</p>
-    <p style="font-weight:bold;">ĐÃ THANH TOÁN</p>
+    <p>Người thu tiền: ${nguoiThu}</p>
+    <div style="text-align:center; font-weight:bold;">ĐÃ NHẬN TIỀN</div>
     <p>Ngày ${thoiGian}</p>
   `;
   document.getElementById("hoaDon").innerHTML = noiDung;
@@ -215,6 +214,5 @@ function xoaLichSu() {
 
 window.onload = capNhatLichSu;
 </script>
-
 </body>
 </html>
