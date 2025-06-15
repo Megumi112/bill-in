@@ -34,18 +34,19 @@
     }
   </style>
 </head>
-<body>
-<h2>Thu tiền điện</h2>
+<body style="background: #f0f0f0; max-width:600px; margin:auto; padding:20px; border-radius:10px; font-family:sans-serif;">
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;"><h2>Thu tiền điện</h2><div class="row">
+<button onclick="document.getElementById('fileInput').click()" type="button">Đẩy dữ liệu</button>
+<input accept=".xlsx" id="fileInput" onchange="docFileExcel(event)" style="display:none" type="file"/>
+</div></div><div class="row">
+<label class="label">Người thu tiền</label>
+<input id="nguoiThuTien" placeholder="Nhập tên người thu"/>
+</div>
 <div class="row">
 <label class="label">Mã khách hàng</label>
 <input id="maKH" list="danhSachKH" onkeydown="if(event.key==='Enter'){timKiemMaKH()}" placeholder="(mục tìm kiếm)"/>
 <datalist id="danhSachKH"></datalist>
 <button onclick="timKiemMaKH()" type="button">🔍</button>
-</div>
-<div class="row">
-<label class="label">Tìm theo tên KH</label>
-<input id="tenKHInput" onkeydown="if(event.key==='Enter'){timKiemTenKH()}" placeholder="Nhập tên KH"/>
-<button onclick="timKiemTenKH()" type="button">🔍</button>
 </div>
 <div class="row">
 <label class="label">Số tiền</label>
@@ -55,15 +56,7 @@
 <label class="label">Tên KH</label>
 <input id="tenKH" readonly=""/>
 </div>
-<div>
-<div id="hoaDon">[Hóa đơn sẽ hiển thị tại đây]</div>
-<button onclick="inHoaDon()" type="button">In</button>
-<button onclick="xacNhanThu()" style="border:2px solid black;" type="button">Xác nhận đã thu</button>
-</div>
-<div class="row">
-<button onclick="document.getElementById('fileInput').click()" type="button">Đẩy dữ liệu</button>
-<input accept=".xlsx" id="fileInput" onchange="docFileExcel(event)" style="display:none" type="file"/>
-</div>
+<div style="display:flex; gap:10px; align-items:flex-start; margin-top:10px;"><div style="flex:1;"><div id="hoaDon">[Hóa đơn sẽ hiển thị tại đây]</div></div><div style="display:flex; flex-direction:column; gap:10px;"><button onclick="inHoaDon()" type="button">In</button><button onclick="xacNhanThu()" style="border:2px solid black;" type="button">Xác nhận đã thu</button></div></div>
 <div class="row">
 <div>
 <label>Lịch sử in</label><br/>
@@ -75,9 +68,6 @@
 <textarea id="lichSuThu" readonly=""></textarea><br/>
 <button onclick="xuatLichSu('thu')" type="button">Xuất lịch sử</button>
 </div>
-</div><div class="row">
-<label class="label">Người thu tiền</label>
-<input id="nguoiThuTien" placeholder="Nhập tên người thu"/>
 </div>
 <button onclick="xuatLichSuExcel()" type="button">Xuất Excel</button>
 <button onclick="xoaLichSu()" type="button">🗑️ Xóa lịch sử</button>
