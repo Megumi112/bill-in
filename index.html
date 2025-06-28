@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="vi">
 <head>
 <meta charset="utf-8"/>
@@ -15,10 +14,10 @@
       min-height: 250px;
       border: 2px solid black;
       padding: 15px;
-      white-space: pre-wrap;
+      white-space: normal; /* Ngăn chặn xuống dòng thừa do ký tự \n */
       font-size: 18px;
       font-family: 'Times New Roman', serif;
-      line-height: 1.2; /* Điều chỉnh khoảng cách dòng */
+      line-height: 1; /* Khoảng cách dòng ngắn hơn nhưng vẫn dễ đọc */
     }
     #hoaDon p { margin: 0; }
 
@@ -122,9 +121,9 @@ function hienThiHoaDon(maKH, tenKH, soTien) {
     <p>Tổng Tiền: ${formatVND(tong)}</p>
     <p>Người thu tiền: ${nguoiThu}</p>
     <div style="text-align:center; font-weight:bold;">ĐÃ NHẬN TIỀN</div>
-    <p>Ngày ${thoiGian}</p>
+    <p>${thoiGian}</p>
   `;
-  document.getElementById("hoaDon").innerHTML = noiDung;
+  document.getElementById("hoaDon").innerHTML = noiDung.trim();
 }
 
 function inHoaDon() {
