@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -5,71 +6,113 @@
 <title>Thu tiền điện</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input, button, textarea { margin: 5px; padding: 5px; }
-
-    /* Khung hóa đơn */
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; max-width: 800px; margin:auto; padding:20px; border-radius:10px; }
+    input, button, textarea { margin: 5px; padding: 5px; font-size: 14px; }
+    .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .input-group label {
+        width: 150px;
+        font-weight: bold;
+    }
+    .input-group input {
+        flex: 1;
+    }
     #hoaDon {
-      width: 400px;
-      min-height: 250px;
-      border: 2px solid black;
-      padding: 15px;
-      white-space: normal; /* Ngăn chặn xuống dòng thừa do ký tự \n */
-      font-size: 18px;
-      font-family: 'Times New Roman', serif;
-      line-height: 1; /* Khoảng cách dòng ngắn hơn nhưng vẫn dễ đọc */
+        width: 400px;
+        min-height: 250px;
+        border: 2px solid black;
+        padding: 15px;
+        white-space: normal;
+        font-size: 18px;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.2;
     }
     #hoaDon p { margin: 0; }
-
-    .row { display: flex; align-items: center; margin-bottom: 10px; }
-    .label { width: 150px; }
-    #lichSuIn, #lichSuThu { width: 300px; height: 100px; margin: 5px; }
-
-    /* Chỉ in phần hóa đơn */
-    @media print {
-      body * { visibility: hidden; }
-      #hoaDon, #hoaDon * { visibility: visible; }
-      #hoaDon { position: absolute; top: 0; left: 0; width: 100%; }
+    #lichSuIn {
+        width: 100%;
+        height: 120px;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow-x: auto;
     }
-  </style>
+    #lichSuThu {
+        width: 250px;
+        height: 150px;
+    }
+    #inButton {
+        padding: 12px 24px;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    #inButton:hover {
+        background-color: #45a049;
+    }
+    @media print {
+        body * { visibility: hidden; }
+        #hoaDon, #hoaDon * { visibility: visible; }
+        #hoaDon { position: absolute; top: 0; left: 0; width: 100%; }
+    }
+</style>
 </head>
-<body style="background: #f0f0f0; max-width:600px; margin:auto; padding:20px; border-radius:10px; font-family:sans-serif;">
-<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;"><h2>Thu tiền điện</h2><div class="row">
-<button onclick="document.getElementById('fileInput').click()" type="button">Đẩy dữ liệu</button>
-<input accept=".xlsx" id="fileInput" onchange="docFileExcel(event)" style="display:none" type="file"/>
-</div></div><div class="row">
-<label class="label">Người thu tiền</label>
-<input id="nguoiThuTien" placeholder="Nhập tên người thu"/>
+<body>
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+    <h2>Thu tiền điện</h2>
+    <div class="row">
+        <button onclick="document.getElementById('fileInput').click()" type="button">Đẩy dữ liệu</button>
+        <input accept=".xlsx" id="fileInput" onchange="docFileExcel(event)" style="display:none" type="file"/>
+    </div>
 </div>
+
+<div class="input-group">
+  <label>Người thu tiền</label>
+  <input id="nguoiThuTien" placeholder="Nhập tên người thu"/>
+</div>
+<div class="input-group">
+  <label>Mã khách hàng</label>
+  <input id="maKH" list="danhSachKH" onkeydown="if(event.key==='Enter'){timKiemMaKH()}" placeholder="(mục tìm kiếm)"/>
+  <datalist id="danhSachKH"></datalist>
+  <button onclick="timKiemMaKH()" type="button">🔍</button>
+</div>
+<div class="input-group">
+  <label>Số tiền</label>
+  <input id="soTien" readonly/>
+</div>
+<div class="input-group">
+  <label>Tên KH</label>
+  <input id="tenKH" readonly/>
+</div>
+
+<div style="display:flex; gap:10px; align-items:flex-start; margin-top:10px;">
+  <div style="flex:1;">
+    <div id="hoaDon">[Hóa đơn sẽ hiển thị tại đây]</div>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <button id="inButton" onclick="inHoaDon()">In</button>
+    <label><b>Lịch sử thu</b></label>
+    <textarea id="lichSuThu" readonly></textarea>
+    <button onclick="xuatLichSu('thu')">Xuất lịch sử</button>
+  </div>
+</div>
+
 <div class="row">
-<label class="label">Mã khách hàng</label>
-<input id="maKH" list="danhSachKH" onkeydown="if(event.key==='Enter'){timKiemMaKH()}" placeholder="(mục tìm kiếm)"/>
-<datalist id="danhSachKH"></datalist>
-<button onclick="timKiemMaKH()" type="button">🔍</button>
+  <div style="flex: 1;">
+    <label>Lịch sử in</label><br/>
+    <textarea id="lichSuIn" readonly></textarea><br/>
+    <button onclick="xuatLichSu('in')" type="button">Xuất lịch sử</button>
+  </div>
 </div>
-<div class="row">
-<label class="label">Số tiền</label>
-<input id="soTien" readonly=""/>
-</div>
-<div class="row">
-<label class="label">Tên KH</label>
-<input id="tenKH" readonly=""/>
-</div>
-<div style="display:flex; gap:10px; align-items:flex-start; margin-top:10px;"><div style="flex:1;"><div id="hoaDon">[Hóa đơn sẽ hiển thị tại đây]</div></div><div style="display:flex; flex-direction:column; gap:10px;"><button onclick="inHoaDon()" type="button">In</button><button onclick="xacNhanThu()" style="border:2px solid black;" type="button">Xác nhận đã thu</button></div></div>
-<div class="row">
-<div>
-<label>Lịch sử in</label><br/>
-<textarea id="lichSuIn" readonly=""></textarea><br/>
-<button onclick="xuatLichSu('in')" type="button">Xuất lịch sử</button>
-</div>
-<div>
-<label><b>Lịch sử thu</b></label><br/>
-<textarea id="lichSuThu" readonly=""></textarea><br/>
-<button onclick="xuatLichSu('thu')" type="button">Xuất lịch sử</button>
-</div>
-</div>
+
 <button onclick="xuatLichSuExcel()" type="button">Xuất Excel</button>
 <button onclick="xoaLichSu()" type="button">🗑️ Xóa lịch sử</button>
+
 <script>
 let duLieu = [];
 let lichSuIn = JSON.parse(localStorage.getItem("lichSuIn")) || [];
@@ -86,19 +129,13 @@ function timKiemMaKH() {
     document.getElementById("tenKH").value = kh.TEN_KHTT;
     document.getElementById("soTien").value = kh.TONG_NOP;
     hienThiHoaDon(kh.MA_KHTT, kh.TEN_KHTT, kh.TONG_NOP);
-  } else {
-    document.getElementById("hoaDon").innerText = "[Không tìm thấy khách hàng]";
-  }
-}
 
-function timKiemTenKH() {
-  const tenKH = document.getElementById("tenKHInput").value.trim().toLowerCase();
-  const kh = duLieu.find(row => row.TEN_KHTT.toLowerCase().includes(tenKH));
-  if (kh) {
-    document.getElementById("maKH").value = kh.MA_KHTT;
-    document.getElementById("tenKH").value = kh.TEN_KHTT;
-    document.getElementById("soTien").value = kh.TONG_NOP;
-    hienThiHoaDon(kh.MA_KHTT, kh.TEN_KHTT, kh.TONG_NOP);
+    // Ghi lại vào lịch sử thu
+    const soTien = Number(kh.TONG_NOP) + 2000;
+    const thoiGian = new Date().toLocaleString();
+    lichSuThu.push({ maKH: kh.MA_KHTT, tenKH: kh.TEN_KHTT, soTien, thoiGian });
+    localStorage.setItem("lichSuThu", JSON.stringify(lichSuThu));
+    capNhatLichSu();
   } else {
     document.getElementById("hoaDon").innerText = "[Không tìm thấy khách hàng]";
   }
@@ -137,16 +174,6 @@ function inHoaDon() {
   setTimeout(() => { window.print(); }, 0);
 }
 
-function xacNhanThu() {
-  const maKH = document.getElementById("maKH").value;
-  const tenKH = document.getElementById("tenKH").value;
-  const soTien = Number(document.getElementById("soTien").value || 0) + 2000;
-  const thoiGian = new Date().toLocaleString();
-  lichSuThu.push({ maKH, tenKH, soTien, thoiGian });
-  localStorage.setItem("lichSuThu", JSON.stringify(lichSuThu));
-  capNhatLichSu();
-}
-
 function capNhatLichSu() {
   const inText = lichSuIn.map(item => `(${item.thoiGian}) ${item.maKH} - ${item.tenKH}: ${formatVND(item.soTien)}`).join("\n");
   const thuText = lichSuThu.map(item => `(${item.thoiGian}) ${item.maKH} - ${item.tenKH}: ${formatVND(item.soTien)}`).join("\n");
@@ -165,7 +192,7 @@ function xuatLichSu(loai) {
 }
 
 function xuatLichSuExcel() {
-  const ws = XLSX.utils.json_to_sheet([...lichSuIn.map(e => ({ ...e, Loại: 'In' })), ...lichSuThu.map(e => ({ ...e, Loại: 'Thu' }))]);
+  const ws = XLSX.utils.json_to_sheet([...lichSuIn.map(e => ({ ...e, Loai: 'In' })), ...lichSuThu.map(e => ({ ...e, Loai: 'Thu' }))]);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Lịch Sử");
   XLSX.writeFile(wb, "lich_su.xlsx");
@@ -187,6 +214,7 @@ function docFileExcel(event) {
       option.value = row.MA_KHTT;
       dataList.appendChild(option);
     });
+    alert("Đẩy dữ liệu thành công!");
   };
   reader.readAsArrayBuffer(file);
 }
