@@ -61,6 +61,7 @@
         #hoaDon { position: absolute; top: 0; left: 0; width: 100%; }
     }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
@@ -141,6 +142,7 @@ function timKiemMaKH() {
   }
 }
 
+
 function hienThiHoaDon(maKH, tenKH, soTien) {
   const nguoiThu = document.getElementById("nguoiThuTien").value || "-";
   const phi = 2000;
@@ -159,9 +161,21 @@ function hienThiHoaDon(maKH, tenKH, soTien) {
     <p>Người thu tiền: ${nguoiThu}</p>
     <div style="text-align:center; font-weight:bold;">ĐÃ NHẬN TIỀN</div>
     <p>${thoiGian}</p>
+    <div id="maQR" style="text-align:center; margin-top:10px;"></div>
   `;
   document.getElementById("hoaDon").innerHTML = noiDung.trim();
+
+  // Tạo mã QR theo chuẩn EVN
+  const qrData = maKH;
+  const qrContainer = document.getElementById("maQR");
+  qrContainer.innerHTML = ""; // Xóa QR cũ
+  new QRCode(qrContainer, {
+      text: qrData,
+      width: 100,
+      height: 100
+  });
 }
+
 
 function inHoaDon() {
   const maKH = document.getElementById("maKH").value;
